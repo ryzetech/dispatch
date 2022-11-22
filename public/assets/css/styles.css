@@ -1,0 +1,29 @@
+.meldung {
+  width: 100%;
+  padding: 5px;
+  text-align: center;
+  --bs-text-opacity: 1;
+  color: rgba(255,255,255,.5);
+  border-radius: 5px;
+}
+
+.code1 {
+  background: var(--bs-red);
+}
+
+.code2 {
+  background: var(--bs-orange);
+}
+
+.code3 {
+  background: var(--bs-yellow);
+}
+
+.code4 {
+  background: var(--bs-green);
+}
+
+.code5 {
+  background: var(--bs-blue);
+}
+
