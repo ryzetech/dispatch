@@ -9,3 +9,25 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id           String  @id @default(cuid())
+  username     String  @unique
+  password     String
+  pwreset      Boolean @default(false)
+  permissions  String
+}
+
+model Operation {
+  id            String    @id @default(cuid())
+  //status        Int       @default(0)
+  mtscode       Int?
+  place         String
+  report        String
+  dispatcher    String
+  createdAt     DateTime  @default(now())
+  dispatchedAt  DateTime?
+  arrivedAt     DateTime?
+  finishedAt    DateTime?
+  updatedAt     DateTime  @updatedAt
+}
