@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const WebSocket = require('ws');
+const { Server } = require("node-ws-packets");
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -13,4 +14,9 @@ app.listen(config.hostport, () => {
   console.log(`Listening on port ${config.hostport}`);
 });
 
-const wss = new WebSocket.Server({ port: config.wsport });
+const monitorsrv = new WebSocket.Server({ port: config.wsport });
+const msm = new Server(monitorsrv, { log: true });
+
+msm.onConnect((client) => {
+
+});
