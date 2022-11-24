@@ -383,6 +383,20 @@ negotiator@0.6.3:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.3.tgz#58e323a72fedc0d6f9cd4d31fe49f51479590ccd"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
 
+node-data-validator@^1.1.1, node-data-validator@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/node-data-validator/-/node-data-validator-1.1.3.tgz#aea152d8926475c093262aff17586ff9b7012a86"
+  integrity sha512-zWG6ZbX+rET6FckKLRXy+uQhxOIxIQxiEt1IX7wgAY307lqGbSzFBgPuQvswHRl8rBSlr5O0YuwpUjMr76Im/g==
+
+node-ws-packets@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/node-ws-packets/-/node-ws-packets-1.0.6.tgz#cab4be0eb50200026c62e93a35d53cfd5d05a17c"
+  integrity sha512-UOJxSDZ25GlL6H2VWiL2FvyQ4LYHWOv4bUdtK264nNINLUZhjgI5D7zM+togsx9vnCuIJ1Ab3JO3HYzy6tl2Dw==
+  dependencies:
+    node-data-validator "^1.1.1"
+    uuid "^8.3.2"
+    ws "^8.2.2"
+
 object-inspect@^1.9.0:
   version "1.12.2"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.12.2.tgz#c0641f26394532f28ab8d796ab954e43c009a8ea"
@@ -530,12 +544,17 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
 vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-ws@^8.11.0:
+ws@^8.11.0, ws@^8.2.2:
   version "8.11.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.11.0.tgz#6a0d36b8edfd9f96d8b25683db2f8d7de6e8e143"
   integrity sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==
