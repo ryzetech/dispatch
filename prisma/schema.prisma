@@ -11,23 +11,25 @@ datasource db {
 }
 
 model User {
-  id           String  @id @default(cuid())
-  username     String  @unique
-  password     String
-  pwreset      Boolean @default(false)
-  permissions  String
+  id          String      @id @default(cuid())
+  username    String      @unique
+  password    String
+  permissions String
+  Operation   Operation[]
 }
 
 model Operation {
-  id            String    @id @default(cuid())
+  id           String    @id @default(cuid())
   //status        Int       @default(0)
-  mtscode       Int?
-  place         String
-  report        String
-  dispatcher    String
-  createdAt     DateTime  @default(now())
-  dispatchedAt  DateTime?
-  arrivedAt     DateTime?
-  finishedAt    DateTime?
-  updatedAt     DateTime  @updatedAt
+  mtscode      Int?
+  place        String
+  report       String
+  dispatcher   User      @relation(fields: [dispatcherId], references: [id])
+  dispatcherId String
+  createdAt    DateTime  @default(now())
+  dispatchedAt DateTime?
+  arrivedAt    DateTime?
+  finishedAt   DateTime?
+  updatedAt    DateTime  @updatedAt
+  completed    Boolean   @default(false)
 }
