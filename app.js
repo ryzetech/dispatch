@@ -17,21 +17,17 @@ const { Operation, OpBatch } = require('./src/packets.js');
 
 // async payload sign
 async function sign(payload) {
-  return new Promise((resolve, reject) => {
-    jwt.sign(payload, process.env.SECRET, { expiresIn: config.authexpire }, (err, token) => {
-      if (err) reject(err);
-      else resolve(token);
-    });
+  jwt.sign(payload, process.env.SECRET, { expiresIn: config.authexpire }, async (err, token) => {
+    if (!err) return token;
+    else throw err;
   });
 }
 
 // async token verify
 async function verify(token) {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.SECRET, (err, decoded) => {
-      if (err) reject(err);
-      else resolve(decoded);
-    });
+  jwt.verify(token, process.env.SECRET, async (err, decoded) => {
+    if (!err) return decoded;
+    else throw err;
   });
 }
 
@@ -43,16 +39,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // express middleware: auth
 app.use(async (req, res, next) => {
-  console.log(req.method, req.url);
+  res.setHeader("Content-type", "text/html; charset=UTF-8");
+  if (req.path === "/auth") return next();
   let token = req.headers['token'];
-  if (req.path !== "/auth") next();
-  if (!token) return res.status(401).send("No token provided");
+  if (!token) return res.status(401).send(JSON.stringify({error: "No token provided"}));
   try {
     let decoded = await verify(token);
+    if (decoded.ip !== req.ip) res.status(401).send(JSON.stringify({error: "IP conflict"}));
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).send("Invalid token");
+    res.status(401).send(JSON.stringify({error: "Invalid token"}));
   }
 });
 
@@ -60,23 +57,27 @@ app.use(async (req, res, next) => {
  * EXPRESS ROUTES
  */
 app.post("/auth", async (req, res) => {
-  if (!Validator(req.body, { username: String, password: String })) return res.status(400).send("Invalid request");
+  let auth = {
+    username: req.headers["username"],
+    password: req.headers["password"]
+  }
+
+  if (!Validator(auth, { username: String, password: String })) return res.status(400).send(JSON.stringify({error: "Invalid request"}));
 
   const user = await prisma.user.findUnique({
     where: {
-      username: req.body.username,
-      password: req.body.password
+      username: auth.username,
     }
   });
 
-  if (!user) return res.status(401).send("Unauthorized");
-  
-  let token = await sign({ id: user.id });
+  if (!user || (user.password !== auth.password)) return res.status(401).send(JSON.stringify({error: "Unauthorized"})); 
 
-  res.status(200).send({
+  let token = await jwt.sign({id: user.id, ip: req.ip}, process.env.SECRET, { expiresIn: config.authexpire });
+
+  await res.status(200).send(JSON.stringify({
     token: token,
     expiresIn: config.authexpire
-  });
+  }));
 });
 
 /**
@@ -107,7 +108,6 @@ msm.onConnect(async (client) => {
  */
 // catch create and update calls to broadcast those changes
 prisma.$use(async (params, next) => {
-  console.log(params);
   const result = await next(params);
   if (params.model === 'Operation' && ["create", "update"].includes(params.action)) {
     msm.broadcast(new Operation(result));
