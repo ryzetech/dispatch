@@ -16,7 +16,6 @@ model User {
   password    String
   permissions String
   operations  Operation[]
-  sessions    Session[]
 }
 
 model Operation {
@@ -33,12 +32,4 @@ model Operation {
   finishedAt   DateTime?
   updatedAt    DateTime  @updatedAt
   completed    Boolean   @default(false)
-}
-
-model Session {
-  sessionId String @id @default(cuid())
-  user      User   @relation(fields: [userId], references: [id])
-  userId    String
-  createdAt DateTime @default(now())
-  expiresAt DateTime
 }
