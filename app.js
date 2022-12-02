@@ -1,3 +1,6 @@
+/**
+ * IMPORTS
+ */
 const config = require('./config.json');
 
 const path = require('path');
@@ -13,15 +16,22 @@ const { Operation, OpBatch } = require('./src/packets.js');
 app.use(express.static(path.join(__dirname, 'public')));
 // app.set("view engine", "ejs");
 
+/**
+ * SERVER SETUP
+ */
+// open express server
 app.listen(config.hostport, () => {
   console.log(`Listening on port ${config.hostport}`);
 });
 
-// open server and manager
+// open ws server and manager, register operation packet
 const monitorsrv = new WebSocket.Server({ port: config.wsport });
 const msm = new Server(monitorsrv, { log: true });
 msm.addPacket(new Operation());
 
+/**
+ * SERVER EVENTS
+ */
 msm.onConnect(async (client) => {
   let ops = await prisma.operation.findMany({
     where: { completed: false }
@@ -29,7 +39,10 @@ msm.onConnect(async (client) => {
   await client.sendPacket(new OpBatch(ops));
 });
 
-// prisma middleware: catch create and update calls to broadcast those changes
+/**
+ * PRISMA MIDDLEWARE
+ */
+// catch create and update calls to broadcast those changes
 prisma.$use(async (params, next) => {
   console.log(params);
   const result = await next(params);
