@@ -1,4 +1,5 @@
 {
   "hostport": 8008,
-  "wsport": 8009
+  "wsport": 8009,
+  "authexpire": "6h"
 }
