@@ -1,3 +1,8 @@
 - mobile version for helpers
-- accound division in dispatcher/helper/both
+- account division in dispatcher/helper/both (=> perm string)
 - status codes (@ASF)
+- permission string
+  - d: dispatch
+    - operations: get, post, patch
+  - h: helper
+    - operations: get, patch

@@ -15,38 +15,29 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { Operation, OpBatch } = require('./src/packets.js');
 
-// async payload sign
-async function sign(payload) {
-  jwt.sign(payload, process.env.SECRET, { expiresIn: config.authexpire }, async (err, token) => {
-    if (!err) return token;
-    else throw err;
-  });
-}
-
-// async token verify
-async function verify(token) {
-  jwt.verify(token, process.env.SECRET, async (err, decoded) => {
-    if (!err) return decoded;
-    else throw err;
-  });
-}
-
 /**
  * EXPRESS SETUP
  */
 // static file server
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("/monitor", path.join(__dirname, 'public')));
 
 // express middleware: auth
 app.use(async (req, res, next) => {
-  res.setHeader("Content-type", "text/html; charset=UTF-8");
-  if (req.path === "/auth") return next();
+  res.setHeader("Content-type", "text/json; charset=UTF-8");
+
+  // paths excluded from auth
+  if (["/auth", "/monitor"].includes(req.path)) return next();
+
+  // check auth
   let token = req.headers['token'];
   if (!token) return res.status(401).send(JSON.stringify({error: "No token provided"}));
   try {
-    let decoded = await verify(token);
-    if (decoded.ip !== req.ip) res.status(401).send(JSON.stringify({error: "IP conflict"}));
-    req.user = decoded;
+    let decoded = await jwt.verify(token, process.env.SECRET);
+
+    if (decoded.exp < Date.now()) return res.status(401).send(JSON.stringify({error: "Invalid token"}));
+    if (decoded.ip !== req.ip) return res.status(401).send(JSON.stringify({error: "IP conflict"}));
+
+    req.userid = decoded;
     next();
   } catch (err) {
     res.status(401).send(JSON.stringify({error: "Invalid token"}));
@@ -72,9 +63,9 @@ app.post("/auth", async (req, res) => {
 
   if (!user || (user.password !== auth.password)) return res.status(401).send(JSON.stringify({error: "Unauthorized"})); 
 
-  let token = await jwt.sign({id: user.id, ip: req.ip}, process.env.SECRET, { expiresIn: config.authexpire });
+  let token = jwt.sign({id: user.id, ip: req.ip}, process.env.SECRET, { expiresIn: config.authexpire });
 
-  await res.status(200).send(JSON.stringify({
+  res.status(200).send(JSON.stringify({
     token: token,
     expiresIn: config.authexpire
   }));
