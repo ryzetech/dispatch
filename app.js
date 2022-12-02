@@ -60,7 +60,7 @@ app.use(async (req, res, next) => {
  * EXPRESS ROUTES
  */
 app.post("/auth", async (req, res) => {
-  if (!Validator(req.body, { username: "string", password: "string" })) return res.status(400).send("Invalid request");
+  if (!Validator(req.body, { username: String, password: String })) return res.status(400).send("Invalid request");
 
   const user = await prisma.user.findUnique({
     where: {
