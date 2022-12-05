@@ -10,7 +10,7 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const WebSocket = require('ws');
 const { Server } = require("node-ws-packets");
-const { Validator } = require("node-data-validator");
+const { Validator, DetailedValue } = require("node-data-validator");
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { Operation, OpBatch } = require('./src/packets.js');
@@ -57,7 +57,7 @@ app.post("/auth", async (req, res) => {
     password: req.headers["password"]
   }
 
-  if (!Validator(auth, { username: String, password: String })) return res.status(400).send(JSON.stringify({error: "Invalid request"}));
+  if (!Validator(auth, { username: String, password: String })) return res.status(400).send(JSON.stringify({ error: "Invalid request" }));
 
   const user = await prisma.user.findUnique({
     where: {
@@ -65,14 +65,36 @@ app.post("/auth", async (req, res) => {
     }
   });
 
-  if (!user || (user.password !== auth.password)) return res.status(401).send(JSON.stringify({error: "Unauthorized"})); 
+  if (!user || (user.password !== auth.password)) return res.status(401).send(JSON.stringify({ error: "Unauthorized" }));
 
-  let token = jwt.sign({id: user.id, ip: req.ip}, process.env.SECRET, { expiresIn: config.authexpire });
+  let token = jwt.sign({ id: user.id, ip: req.ip }, process.env.SECRET, { expiresIn: config.authexpire });
 
   res.status(200).send(JSON.stringify({
     token: token,
     expiresIn: config.authexpire
   }));
+});
+
+app.post("/operation", async (req, res) => {
+  console.log(req.body);
+  if (!Validator(req.body, {
+    mtscode: new DetailedValue(Number, { required: false, min: 1, max: 5 }),
+    place: String,
+    report: String,
+    dispatchedAt: new DetailedValue(Date, { required: false }),
+  })) return res.status(400).send(JSON.stringify({ error: "Invalid request" }));
+
+  const operation = await prisma.operation.create({
+    data: {
+      mtscode: req.body.mtscode || null,
+      place: req.body.place,
+      report: req.body.report,
+      dispatcher: { connect: { id: req.userid } },
+      dispatchedAt: req.body.dispatchedAt || null,
+    }
+  });
+
+  res.status(200).send(operation);
 });
 
 /**
