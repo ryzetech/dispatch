@@ -30,17 +30,18 @@ app.use(async (req, res, next) => {
 
   // check auth
   let token = req.headers['token'];
-  if (!token) return res.status(401).send(JSON.stringify({error: "No token provided"}));
+  if (!token) return res.status(401).send(JSON.stringify({ error: "No token provided" }));
   try {
     let decoded = await jwt.verify(token, process.env.SECRET);
 
-    if (decoded.exp < Date.now()) return res.status(401).send(JSON.stringify({error: "Invalid token"}));
-    if (decoded.ip !== req.ip) return res.status(401).send(JSON.stringify({error: "IP conflict"}));
+    if (decoded.exp < Date.now()/1000) return res.status(401).send(JSON.stringify({ error: "Invalid token" }));
+    if (decoded.ip !== req.ip) return res.status(401).send(JSON.stringify({ error: "IP conflict" }));
 
-    req.userid = decoded;
+    req.userid = decoded.id;
     next();
   } catch (err) {
-    res.status(401).send(JSON.stringify({error: "Invalid token"}));
+    console.error(err);
+    res.status(401).send(JSON.stringify({ error: "Invalid token" }));
   }
 });
 
