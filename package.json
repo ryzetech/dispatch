@@ -11,5 +11,8 @@
     "node-ws-packets": "^1.0.6",
     "prisma": "^4.7.0",
     "ws": "^8.11.0"
+  },
+  "devDependencies": {
+    "axios": "^1.2.0"
   }
 }
