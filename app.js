@@ -18,8 +18,11 @@ const { Operation, OpBatch } = require('./src/packets.js');
 /**
  * EXPRESS SETUP
  */
+// configure for json body parsing
+app.use(express.json());
+
 // static file server
-app.use(express.static("/monitor", path.join(__dirname, 'public')));
+app.use("/monitor", express.static(path.join(__dirname, 'public')));
 
 // express middleware: auth
 app.use(async (req, res, next) => {
@@ -82,7 +85,7 @@ app.listen(config.hostport, () => {
 
 // open ws server and manager, register operation packet
 const monitorsrv = new WebSocket.Server({ port: config.wsport });
-const msm = new Server(monitorsrv /*, { log: true }*/);
+const msm = new Server(monitorsrv);
 msm.addPacket(new Operation());
 
 /**
