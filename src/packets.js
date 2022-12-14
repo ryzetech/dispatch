@@ -8,7 +8,7 @@ class Operation extends Packet {
       mtscode: new DetailedValue(Number, { required: false, min: 1, max: 5 }),
       place: String,
       report: String,
-      createdAt: Date,
+      createdAt: Number,
     }
     super("Operation", payload, model);
   }

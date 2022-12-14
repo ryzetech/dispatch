@@ -127,7 +127,13 @@ msm.onConnect(async (client) => {
 prisma.$use(async (params, next) => {
   const result = await next(params);
   if (params.model === 'Operation' && ["create", "update"].includes(params.action)) {
-    msm.broadcast(new Operation(result));
+    msm.broadcast(new Operation({
+      id: result.id,
+      mtscode: result.mtscode,
+      place: result.place,
+      report: result.report,
+      createdAt: result.createdAt.getTime(),
+    }));
   }
   return result;
 });
