@@ -525,7 +525,7 @@ node-data-validator@^1.1.1, node-data-validator@^1.1.3:
   resolved "https://registry.yarnpkg.com/node-data-validator/-/node-data-validator-1.1.3.tgz#aea152d8926475c093262aff17586ff9b7012a86"
   integrity sha512-zWG6ZbX+rET6FckKLRXy+uQhxOIxIQxiEt1IX7wgAY307lqGbSzFBgPuQvswHRl8rBSlr5O0YuwpUjMr76Im/g==
 
-node-ws-packets@^1.0.6:
+node-ws-packets@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/node-ws-packets/-/node-ws-packets-1.1.1.tgz#3e8bcc6bb97bd134b5dc93e81e415721d15a59fb"
   integrity sha512-P89AmKSx6aYhEtTGmrAaQ47RYwnAO1+9cC5Y8cuTGwE4wmQ6bRhPZhta2njltQl4z1+FSyamEgGq3wUK3IBCVA==
